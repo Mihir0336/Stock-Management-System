@@ -122,18 +122,22 @@ $customers = $stmt->get_result();
             </button>
         </div>
 
-        <!-- Search Section -->
+        <!-- Search Form -->
         <div class="search-section">
-            <form method="GET" class="row g-2">
-                <div class="col-md-10">
-                    <input type="text" class="form-control" name="search" 
-                           placeholder="Search by name, phone or village..." 
-                           value="<?php echo htmlspecialchars($search); ?>">
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="GET" class="row g-2" id="searchForm">
+                        <div class="col-md-10">
+                            <input type="text" class="form-control" id="searchInput" name="search" 
+                                   placeholder="Search by name, phone or village" 
+                                   value="<?php echo htmlspecialchars($search); ?>">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
-                </div>
-            </form>
+            </div>
         </div>
 
         <?php if (isset($_SESSION['success'])): ?>
@@ -156,37 +160,31 @@ $customers = $stmt->get_result();
             </div>
         <?php endif; ?>
 
-        <div class="row">
-            <?php while ($customer = $customers->fetch_assoc()): ?>
-            <div class="col-md-4 mb-4">
-                <div class="customer-card">
-                    <div class="customer-header">
-                        <h5 class="mb-0"><?php echo htmlspecialchars($customer['name']); ?></h5>
-                    </div>
-                    <div class="customer-body">
-                        <div class="mb-2">
-                            <i class="bi bi-telephone"></i> 
-                            <?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?>
-                        </div>
-                        <div class="mb-2">
-                            <i class="bi bi-geo-alt"></i> 
-                            <?php echo htmlspecialchars($customer['village'] ?? 'N/A'); ?>
-                        </div>
-                        <div class="customer-stats">
-                            <div class="stat-item">
-                                <div class="stat-value"><?php echo $customer['total_bills']; ?></div>
-                                <div class="stat-label">Bills</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value">₹<?php echo number_format($customer['total_spent'], 0); ?></div>
-                                <div class="stat-label">Spent</div>
-                            </div>
-                            <div class="stat-item">
-                                <?php if ($customer['due_amount'] > 0): ?>
-                                <div class="stat-value due-amount">₹<?php echo number_format($customer['due_amount'], 2); ?></div>
-                                <div class="stat-label">Due</div>
-                                <?php else: ?>
-                                <div class="stat-value">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped" id="customersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Village</th>
+                                <th>Total Bills</th>
+                                <th>Total Spent</th>
+                                <th>Last Purchase</th>
+                                <th>Amount Due</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while ($customer = $customers->fetch_assoc()): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($customer['name']); ?></td>
+                                <td><?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($customer['village'] ?? 'N/A'); ?></td>
+                                <td><?php echo $customer['total_bills']; ?></td>
+                                <td>₹<?php echo number_format($customer['total_spent'] ?? 0, 2); ?></td>
+                                <td>
                                     <?php 
                                     if ($customer['last_purchase_date']) {
                                         echo date('d M Y', strtotime($customer['last_purchase_date']));
@@ -194,21 +192,25 @@ $customers = $stmt->get_result();
                                         echo 'N/A';
                                     }
                                     ?>
-                                </div>
-                                <div class="stat-label">Last Purchase</div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <a href="customer_details.php?id=<?php echo $customer['id']; ?>" 
-                               class="btn btn-primary w-100">
-                                View Details
-                            </a>
-                        </div>
-                    </div>
+                                </td>
+                                <td>
+                                    <?php if ($customer['due_amount'] > 0): ?>
+                                        <span class="text-danger">₹<?php echo number_format($customer['due_amount'], 2); ?></span>
+                                    <?php else: ?>
+                                        <span class="text-success">₹0.00</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <a href="customer_details.php?id=<?php echo $customer['id']; ?>" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <?php endwhile; ?>
         </div>
     </div>
 
@@ -246,38 +248,55 @@ $customers = $stmt->get_result();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Add Customer Form Handler
-        document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
+        // Add live search functionality
+        let searchTimeout;
+        const searchInput = document.getElementById('searchInput');
+        const searchForm = document.getElementById('searchForm');
+        const customersTable = document.getElementById('customersTable');
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const formData = new FormData(searchForm);
+                const searchParams = new URLSearchParams(formData);
+                
+                fetch('customers.php?' + searchParams.toString())
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newTable = doc.querySelector('#customersTable');
+                        if (newTable) {
+                            customersTable.innerHTML = newTable.innerHTML;
+                        }
+                    });
+            }, 300);
+        });
+
+        // Prevent form submission on enter key
+        searchForm.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        });
+
+        // Prevent default form submission and handle it with JavaScript
+        searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
-
-            // Log form data for debugging
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ': ' + pair[1]);
-            }
-
-            fetch('add_customer.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json();
-            })
-            .then(data => {
-                console.log('Response data:', data);
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert(data.message || 'Error adding customer');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error adding customer. Check console for details.');
-            });
+            const searchParams = new URLSearchParams(formData);
+            
+            fetch('customers.php?' + searchParams.toString())
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newTable = doc.querySelector('#customersTable');
+                    if (newTable) {
+                        customersTable.innerHTML = newTable.innerHTML;
+                    }
+                });
         });
     </script>
 </body>
-</html> 
 </html> 

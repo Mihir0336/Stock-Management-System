@@ -328,18 +328,14 @@ $bills = $stmt->get_result();
 
                 <!-- Date Filter Form -->
                 <div class="col-md-6">
-                    <form method="GET" class="row g-2" id="dateFilterForm">
-                        <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
-                        <div class="col-md-4">
-                            <input type="date" class="form-control" name="date_from" value="<?php echo htmlspecialchars($date_from); ?>">
+                    <div class="row g-2">
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" id="dateFrom" value="<?php echo htmlspecialchars($date_from); ?>">
                         </div>
-                        <div class="col-md-4">
-                            <input type="date" class="form-control" name="date_to" value="<?php echo htmlspecialchars($date_to); ?>">
+                        <div class="col-md-5">
+                            <input type="date" class="form-control" id="dateTo" value="<?php echo htmlspecialchars($date_to); ?>">
                         </div>
-                        <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -347,7 +343,7 @@ $bills = $stmt->get_result();
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="billsTable">
                         <thead>
                             <tr>
                                 <th>Bill Number</th>
@@ -726,26 +722,49 @@ $bills = $stmt->get_result();
         let searchTimeout;
         const searchInput = document.getElementById('searchInput');
         const searchForm = document.getElementById('searchForm');
+        const dateFrom = document.getElementById('dateFrom');
+        const dateTo = document.getElementById('dateTo');
         const billsTable = document.getElementById('billsTable');
 
+        function updateResults() {
+            const searchValue = searchInput.value;
+            const dateFromValue = dateFrom.value;
+            const dateToValue = dateTo.value;
+            
+            // Build URL with parameters
+            const params = new URLSearchParams();
+            if (searchValue) params.append('search', searchValue);
+            if (dateFromValue) params.append('date_from', dateFromValue);
+            if (dateToValue) params.append('date_to', dateToValue);
+            
+            // Update URL without reloading the page
+            const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+            window.history.pushState({}, '', newUrl);
+            
+            fetch(newUrl)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newTable = doc.querySelector('#billsTable');
+                    if (newTable) {
+                        billsTable.innerHTML = newTable.innerHTML;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        // Search input handler
         searchInput.addEventListener('input', function() {
             clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                const formData = new FormData(searchForm);
-                const searchParams = new URLSearchParams(formData);
-                
-                fetch('bills.php?' + searchParams.toString())
-                    .then(response => response.text())
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        const newTable = doc.querySelector('#billsTable');
-                        if (newTable) {
-                            billsTable.innerHTML = newTable.innerHTML;
-                        }
-                    });
-            }, 300);
+            searchTimeout = setTimeout(updateResults, 300);
         });
+
+        // Date input handlers
+        dateFrom.addEventListener('change', updateResults);
+        dateTo.addEventListener('change', updateResults);
 
         // Prevent form submission on enter key
         searchForm.addEventListener('keypress', function(e) {
@@ -757,19 +776,7 @@ $bills = $stmt->get_result();
         // Prevent default form submission and handle it with JavaScript
         searchForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
-            const searchParams = new URLSearchParams(formData);
-            
-            fetch('bills.php?' + searchParams.toString())
-                .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const newTable = doc.querySelector('#billsTable');
-                    if (newTable) {
-                        billsTable.innerHTML = newTable.innerHTML;
-                    }
-                });
+            updateResults();
         });
 
         // Add quantity button functionality
