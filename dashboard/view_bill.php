@@ -243,7 +243,8 @@ $payments->data_seek(0);
             text-align: center;
             margin-bottom: 20px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #dee2e6;
+            border-bottom: 2px solid #e0e0e0;
+            background-color: #ffffff;
         }
         .bill-header .row {
             display: flex;
@@ -258,18 +259,20 @@ $payments->data_seek(0);
             text-align: right;
         }
         .bill-header h2 {
-            color: #2c3e50;
+            color: #333333;
             margin-top: 0;
             margin-bottom: 5px;
         }
         .bill-header p {
             margin: 0 0 3px 0;
+            color: #6c757d;
         }
         .bill-details {
             margin-bottom: 20px;
             background-color: #f8f9fa;
             padding: 15px;
             border-radius: 5px;
+            border: 1px solid #e0e0e0;
         }
         .bill-table {
             margin-bottom: 20px;
@@ -277,15 +280,16 @@ $payments->data_seek(0);
         .bill-table th {
             background-color: #f8f9fa;
             font-weight: 600;
+            color: #333333;
         }
         .bill-footer {
             margin-top: 30px;
             padding-top: 20px;
-            border-top: 2px solid #dee2e6;
+            border-top: 2px solid #e0e0e0;
         }
         .customer-details h5,
         .bill-info h5 {
-            color: #2c3e50;
+            color: #333333;
             margin-bottom: 15px;
         }
         .bill-footer ul {
@@ -457,13 +461,13 @@ $payments->data_seek(0);
                         <div class="mb-3">
                             <label class="form-label">Payment Amount</label>
                             <input type="number" class="form-control" name="amount" id="settlementAmount" required 
-                                   min="0" step="0.01" max="<?php echo $bill['amount_due']; ?>"
+                                   min="0" step="0.01" max="<?php echo $bill['amount_due']; ?>" autocomplete="off"
                                    onchange="validateSettlementAmount(this)">
                             <div class="form-text">Enter the amount to pay</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Payment Method</label>
-                            <select class="form-select" name="payment_method" required>
+                            <select class="form-select" name="payment_method" required autocomplete="off">
                                 <option value="cash">Cash</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                                 <option value="upi">UPI</option>
@@ -472,7 +476,7 @@ $payments->data_seek(0);
                         <div class="mb-3">
                             <label class="form-label">Notes</label>
                             <textarea class="form-control" name="notes" rows="2" 
-                                      placeholder="Enter any notes about this payment"></textarea>
+                                      placeholder="Enter any notes about this payment" autocomplete="off"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -50,20 +50,21 @@ $customers = $stmt->get_result();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .customer-card {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            color: white;
+            color: #333333;
             transition: transform 0.2s;
         }
         .customer-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .customer-header {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             padding: 1rem;
             border-radius: 0.5rem 0.5rem 0 0;
+            border-bottom: 1px solid #e0e0e0;
         }
         .customer-body {
             padding: 1rem;
@@ -73,7 +74,7 @@ $customers = $stmt->get_result();
             justify-content: space-between;
             margin-top: 1rem;
             padding-top: 1rem;
-            border-top: 1px solid #2c3e50;
+            border-top: 1px solid #e0e0e0;
         }
         .stat-item {
             text-align: center;
@@ -81,30 +82,31 @@ $customers = $stmt->get_result();
         .stat-value {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #3498db;
+            color: #007bff;
         }
         .stat-label {
             font-size: 0.8rem;
-            color: #bdc3c7;
+            color: #6c757d;
         }
         .search-section {
-            background-color: #2c3e50;
-            padding: 1.5rem;
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem;
             border-radius: 0.5rem;
             margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
         }
         .search-section .form-control {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
-            color: white;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            color: #333333;
         }
         .search-section .btn {
-            background-color: #3498db;
-            border-color: #3498db;
+            background-color: #007bff;
+            border-color: #007bff;
         }
         .search-section .btn:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
+            background-color: #0056b3;
+            border-color: #0056b3;
         }
         .due-amount {
             color: #e74c3c;
@@ -124,20 +126,14 @@ $customers = $stmt->get_result();
 
         <!-- Search Form -->
         <div class="search-section">
-            <div class="row">
-                <div class="col-md-6">
-                    <form method="GET" class="row g-2" id="searchForm">
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" id="searchInput" name="search" 
-                                   placeholder="Search by name, phone or village" 
-                                   value="<?php echo htmlspecialchars($search); ?>">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Search</button>
-                        </div>
-                    </form>
+            <form method="GET" id="searchForm">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="text" class="form-control" id="searchInput" name="search" 
+                        placeholder="Search by name, phone or village" 
+                        value="<?php echo htmlspecialchars($search); ?>" autocomplete="off">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
                 </div>
-            </div>
+            </form>
         </div>
 
         <?php if (isset($_SESSION['success'])): ?>
@@ -226,15 +222,15 @@ $customers = $stmt->get_result();
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Customer Name</label>
-                            <input type="text" class="form-control" name="name" required>
+                            <input type="text" class="form-control" name="name" required autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" name="phone">
+                            <input type="tel" class="form-control" name="phone" autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Village</label>
-                            <input type="text" class="form-control" name="village">
+                            <input type="text" class="form-control" name="village" autocomplete="off">
                         </div>
                     </div>
                     <div class="modal-footer">

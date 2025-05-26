@@ -31,21 +31,22 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .product-card {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            color: white;
+            color: #333333;
             margin-bottom: 1rem;
             transition: transform 0.2s;
         }
         .product-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .product-header {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             padding: 1rem;
             border-radius: 0.5rem 0.5rem 0 0;
+            border-bottom: 1px solid #e0e0e0;
         }
         .product-body {
             padding: 1rem;
@@ -70,24 +71,26 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
             text-align: center;
         }
         .customer-section {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             padding: 1.5rem;
             border-radius: 0.5rem;
             margin-bottom: 2rem;
-            color: white;
+            color: #333333;
+            border: 1px solid #e0e0e0;
         }
         .payment-section {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             padding: 1.5rem;
             border-radius: 0.5rem;
             margin-top: 2rem;
-            color: white;
+            color: #333333;
+            border: 1px solid #e0e0e0;
         }
         .summary-card {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            color: white;
+            color: #333333;
             padding: 1.5rem;
             position: sticky;
             top: 1rem;
@@ -95,28 +98,31 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
         .summary-value {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #3498db;
+            color: #007bff;
         }
         .summary-label {
-            color: #bdc3c7;
+            color: #6c757d;
         }
         .product-filters {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             padding: 1rem;
             border-radius: 0.5rem;
+            border: 1px solid #e0e0e0;
         }
         .selected-items-summary {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             border-radius: 0.5rem;
             padding: 1rem;
+            border: 1px solid #e0e0e0;
         }
         .selected-item {
-            background-color: #34495e;
+            background-color: #ffffff;
             border-radius: 0.25rem;
             padding: 0.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid #e0e0e0;
         }
         .quick-add-buttons {
             display: flex;
@@ -138,40 +144,41 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
         }
         /* Add new styles for selected products table */
         .selected-products .table {
-            background-color: #2c3e50;
+            background-color: #ffffff;
             border-radius: 0.5rem;
             overflow: hidden;
+            border: 1px solid #e0e0e0;
         }
         .selected-products .table thead th {
-            background-color: #34495e;
-            color: #ecf0f1;
-            border-bottom: 2px solid #2c3e50;
+            background-color: #f8f9fa;
+            color: #333333;
+            border-bottom: 2px solid #e0e0e0;
             padding: 1rem;
             font-weight: 600;
         }
         .selected-products .table tbody td {
             padding: 1rem;
-            border-bottom: 1px solid #34495e;
-            color: #ecf0f1;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333333;
         }
         .selected-products .table tbody tr:last-child td {
             border-bottom: none;
         }
         .selected-products .table tbody tr:hover {
-            background-color: #34495e;
+            background-color: #f8f9fa;
         }
         .selected-products .input-group-sm {
             width: auto;
         }
         .selected-products .input-group-sm .form-control {
-            background-color: #2c3e50;
-            border-color: #34495e;
-            color: #ecf0f1;
+            background-color: #ffffff;
+            border-color: #e0e0e0;
+            color: #333333;
         }
         .selected-products .input-group-sm .form-control:focus {
-            background-color: #34495e;
-            border-color: #3498db;
-            color: #ecf0f1;
+            background-color: #ffffff;
+            border-color: #007bff;
+            color: #333333;
             box-shadow: none;
         }
         /* Remove number input arrows */
@@ -190,44 +197,47 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
             padding-right: 8px;
         }
         .selected-products .quantity-btn {
-            background-color: #34495e;
-            border-color: #2c3e50;
-            color: #ecf0f1;
+            background-color: #f8f9fa;
+            border-color: #e0e0e0;
+            color: #333333;
         }
         .selected-products .quantity-btn:hover {
-            background-color: #3498db;
-            border-color: #2980b9;
+            background-color: #007bff;
+            border-color: #0056b3;
+            color: #ffffff;
         }
         .selected-products .btn-danger {
-            background-color: #e74c3c;
-            border-color: #c0392b;
+            background-color: #dc3545;
+            border-color: #dc3545;
         }
         .selected-products .btn-danger:hover {
-            background-color: #c0392b;
-            border-color: #a93226;
+            background-color: #c82333;
+            border-color: #bd2130;
         }
         #liveSearchResults {
             margin-top: 2px;
             max-height: 300px;
             overflow-y: auto;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #2c3e50 !important;
+            border: 1px solid #e0e0e0 !important;
+            background-color: #ffffff;
         }
         .customer-result-item {
             padding: 8px 12px;
             cursor: pointer;
-            border-bottom: 1px solid #2c3e50;
+            border-bottom: 1px solid #e0e0e0;
             transition: background-color 0.2s;
+            color: #333333;
         }
         .customer-result-item:hover {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
         }
         .customer-result-item:last-child {
             border-bottom: none;
         }
         .customer-result-name {
             font-weight: bold;
-            color: #3498db;
+            color: #007bff;
         }
         .customer-result-details {
             font-size: 0.85rem;
@@ -236,6 +246,78 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
         .customer-due-amount {
             color: #e74c3c;
             font-weight: bold;
+        }
+        /* Search Results */
+        #searchResults {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        }
+        #searchResults .list-group-item {
+            background-color: #ffffff;
+            border-color: #e0e0e0;
+            color: #333333;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        #searchResults .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        #searchResults .list-group-item.active {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        #searchResults .list-group-item small {
+            color: #6c757d;
+        }
+        .product-search-section {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
+        }
+        .product-search-section .form-control {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            color: #333333;
+        }
+        .product-search-section .btn {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .product-search-section .btn:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .search-section {
+            background-color: #f8f9fa;
+            padding: 0.75rem 1rem !important;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
+        }
+        .search-section .form-control {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            color: #333333;
+        }
+        .search-section .btn {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .search-section .btn:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .search-section .input-group {
+            gap: 1rem;
+        }
+        .search-section .input-group .form-control,
+        .search-section .input-group .btn {
+            border-radius: 1rem !important;
         }
     </style>
 </head>
@@ -246,70 +328,52 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
         <div class="row">
             <div class="col-md-8">
                 <!-- Customer Selection -->
-                <div class="customer-section">
+                <div class="search-section position-relative">
                     <h4 class="mb-3">Select Customer</h4>
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="input-group position-relative">
-                                <input type="text" class="form-control" id="customerSearch" 
-                                       placeholder="Search customer by name or phone..."
-                                       oninput="handleCustomerSearch(this.value)">
-                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                                    <i class="bi bi-plus"></i> Add Customer
-                                </button>
-                                <!-- Live Search Results -->
-                                <div id="liveSearchResults" class="position-absolute bg-dark border rounded shadow-sm" 
-                                     style="width: 100%; max-height: 300px; overflow-y: auto; z-index: 1000; display: none; top: 100%; left: 0;">
-                                </div>
+                    <div class="search-input-container position-relative">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="customerSearch" placeholder="Search customer by name or phone..." oninput="handleCustomerSearch(this.value)" autocomplete="off">
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                                <i class="bi bi-plus"></i> Add Customer
+                            </button>
+                        </div>
+                        <div id="liveSearchResults" class="live-search-results"></div>
+                    </div>
+                    <div id="selectedCustomer" class="mt-2" style="display: none;">
+                        <div class="alert alert-info d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong id="selectedCustomerName"></strong>
+                                <br>
+                                <small id="selectedCustomerDetails"></small>
                             </div>
-                            <div id="selectedCustomer" class="mt-2" style="display: none;">
-                                <div class="alert alert-info d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong id="selectedCustomerName"></strong>
-                                        <br>
-                                        <small id="selectedCustomerDetails"></small>
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearCustomerSelection()">
-                                        <i class="bi bi-x"></i>
-                                    </button>
-                                </div>
-                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearCustomerSelection()">
+                                <i class="bi bi-x"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Products List -->
-                <div class="product-filters mb-4">
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="productSearch" 
-                                       placeholder="Search products by name, company, or category..."
-                                       oninput="handleProductSearch(this.value)">
-                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                                    <i class="bi bi-plus"></i> Add Product
-                                </button>
-                            </div>
-                            <!-- Search Results -->
-                            <div id="searchResults" class="mt-2" style="display: none;">
-                                <div class="card bg-dark">
-                                    <div class="card-body">
-                                        <h6 class="card-title">Search Results</h6>
-                                        <div id="productsList" class="list-group list-group-flush"></div>
-                                    </div>
-                                </div>
-                            </div>
+                <div class="search-section position-relative mb-4">
+                    <h4 class="mb-3">Select Product</h4>
+                    <div class="search-input-container position-relative">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="productSearch" placeholder="Search products by name, company, or category..." oninput="handleProductSearch(this.value)" autocomplete="off">
+                            <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                                <i class="bi bi-plus"></i> Add Product
+                            </button>
                         </div>
+                        <div id="searchResults" class="live-search-results"></div>
                     </div>
                 </div>
 
                 <!-- Selected Products -->
                 <div class="selected-products mb-4">
-                    <div class="card bg-dark">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Selected Products</h5>
                             <div class="table-responsive">
-                                <table class="table table-dark table-hover">
+                                <table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>Product</th>
@@ -343,12 +407,12 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Amount Paid</label>
-                            <input type="number" class="form-control" id="amountPaid" value="0" min="0" step="0.01">
+                            <input type="number" class="form-control" id="amountPaid" value="0" min="0" step="0.01" autocomplete="off">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Payment Notes</label>
-                        <textarea class="form-control" id="paymentNotes" rows="2"></textarea>
+                        <textarea class="form-control" id="paymentNotes" rows="2" autocomplete="off"></textarea>
                     </div>
                 </div>
             </div>
@@ -393,15 +457,15 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Customer Name</label>
-                            <input type="text" class="form-control" name="name" required>
+                            <input type="text" class="form-control" name="name" required autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" name="phone">
+                            <input type="tel" class="form-control" name="phone" autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Village</label>
-                            <input type="text" class="form-control" name="village">
+                            <input type="text" class="form-control" name="village" autocomplete="off">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -704,41 +768,21 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
             .then(response => response.json())
             .then(data => {
                 const resultsDiv = document.getElementById('liveSearchResults');
-                
                 if (data.length === 0) {
-                    resultsDiv.innerHTML = '<div class="customer-result-item text-center">No customers found</div>';
+                    resultsDiv.innerHTML = '<div class="live-search-item text-center">No customers found</div>';
                 } else {
                     resultsDiv.innerHTML = data.map(customer => `
-                        <div class="customer-result-item" onclick="selectCustomer(${customer.id}, '${customer.name}', '${customer.phone || ''}', '${customer.village || ''}', ${customer.due_amount || 0})">
-                            <div class="customer-result-name">${customer.name}</div>
-                            <div class="customer-result-details">
+                        <div class="live-search-item" onclick="selectCustomer(${customer.id}, '${customer.name}', '${customer.phone || ''}', '${customer.village || ''}', ${customer.due_amount || 0})">
+                            <div class="item-title">${customer.name}</div>
+                            <div class="item-details">
                                 ${customer.phone ? 'Phone: ' + customer.phone : ''}
-                                ${customer.village ? 'Village: ' + customer.village : ''}
-                                ${customer.due_amount > 0 ? `<div class="customer-due-amount">Due Amount: ₹${parseFloat(customer.due_amount).toFixed(2)}</div>` : ''}
+                                ${customer.village ? ' | Village: ' + customer.village : ''}
+                                ${customer.due_amount > 0 ? `<span class='text-danger ms-2'>Due: ₹${parseFloat(customer.due_amount).toFixed(2)}</span>` : ''}
                             </div>
                         </div>
                     `).join('');
                 }
-                
                 resultsDiv.style.display = 'block';
-                
-                // Adjust position if needed
-                const inputGroup = resultsDiv.parentElement;
-                const inputRect = inputGroup.getBoundingClientRect();
-                const windowHeight = window.innerHeight;
-                const spaceBelow = windowHeight - inputRect.bottom;
-                
-                if (spaceBelow < 300 && inputRect.top > 300) {
-                    resultsDiv.style.top = 'auto';
-                    resultsDiv.style.bottom = '100%';
-                    resultsDiv.style.marginTop = '0';
-                    resultsDiv.style.marginBottom = '2px';
-                } else {
-                    resultsDiv.style.top = '100%';
-                    resultsDiv.style.bottom = 'auto';
-                    resultsDiv.style.marginTop = '2px';
-                    resultsDiv.style.marginBottom = '0';
-                }
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -784,7 +828,7 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
 
             // Hide results if search is empty
             if (!value.trim()) {
-                document.getElementById('productsList').innerHTML = '';
+                document.getElementById('searchResults').style.display = 'none';
                 return;
             }
 
@@ -809,49 +853,36 @@ $customers = $conn->query("SELECT * FROM customers ORDER BY name");
             })
             .then(response => response.json())
             .then(data => {
-                const productsList = document.getElementById('productsList');
                 const searchResults = document.getElementById('searchResults');
-                
                 if (!data.success) {
-                    productsList.innerHTML = '<div class="list-group-item">Error: ' + data.message + '</div>';
+                    searchResults.innerHTML = '<div class="live-search-item">Error: ' + data.message + '</div>';
                     searchResults.style.display = 'block';
                     return;
                 }
-
                 if (!data.products || data.products.length === 0) {
-                    productsList.innerHTML = '<div class="list-group-item">No products found</div>';
+                    searchResults.innerHTML = '<div class="live-search-item">No products found</div>';
                     searchResults.style.display = 'block';
                     return;
                 }
-
-                productsList.innerHTML = data.products.map(product => {
+                searchResults.innerHTML = data.products.map(product => {
                     const isSelected = selectedProducts[product.id]?.quantity > 0;
                     return `
-                        <div class="list-group-item list-group-item-action bg-dark text-white ${isSelected ? 'active' : ''}"
+                        <div class="live-search-item${isSelected ? ' active' : ''}"
                              onclick="selectProduct(${product.id}, '${product.name}', '${product.category_name}', '${product.company}', ${product.quantity}, ${product.price_per_unit}, '${product.size || ''}')">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>${product.name}${product.size ? ` (${product.size})` : ''}</strong>
-                                    <br>
-                                    <small>${product.category_name} - ${product.company}</small>
-                                </div>
-                                <div>
-                                    <small>Available: ${product.quantity}</small>
-                                    <br>
-                                    <small>Price: ₹${parseFloat(product.price_per_unit).toFixed(2)}</small>
-                                </div>
+                            <div class="item-title">${product.name}${product.size ? ` (${product.size})` : ''}</div>
+                            <div class="item-details">
+                                ${product.category_name} - ${product.company} | Available: ${product.quantity} | Price: ₹${parseFloat(product.price_per_unit).toFixed(2)}
                             </div>
                         </div>
                     `;
                 }).join('');
-                
                 searchResults.style.display = 'block';
             })
             .catch(error => {
                 console.error('Error:', error);
-                const productsList = document.getElementById('productsList');
-                productsList.innerHTML = '<div class="list-group-item">Error loading products. Please try again.</div>';
-                document.getElementById('searchResults').style.display = 'block';
+                const searchResults = document.getElementById('searchResults');
+                searchResults.innerHTML = '<div class="live-search-item">Error loading products. Please try again.</div>';
+                searchResults.style.display = 'block';
             });
         }
 

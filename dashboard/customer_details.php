@@ -90,47 +90,49 @@ $payments = $stmt->get_result();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .customer-header {
-            background-color: #2c3e50;
-            color: white;
+            background-color: #ffffff;
+            color: #333333;
             padding: 2rem;
             border-radius: 0.5rem;
             margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
         }
         .stat-card {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            color: white;
+            color: #333333;
             padding: 1.5rem;
             height: 100%;
         }
         .stat-value {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #3498db;
+            color: #007bff;
         }
         .stat-label {
             font-size: 0.9rem;
-            color: #bdc3c7;
+            color: #6c757d;
         }
         .bill-card {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            color: white;
+            color: #333333;
             margin-bottom: 1rem;
         }
         .bill-header {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             padding: 1rem;
             border-radius: 0.5rem 0.5rem 0 0;
+            border-bottom: 1px solid #e0e0e0;
         }
         .bill-body {
             padding: 1rem;
         }
         .items-list {
             white-space: pre-line;
-            color: #bdc3c7;
+            color: #6c757d;
             font-size: 0.9rem;
         }
     </style>
@@ -201,7 +203,7 @@ $payments = $stmt->get_result();
         <h3 class="mb-3">Payment History</h3>
         <?php if ($payments->num_rows > 0): ?>
         <div class="table-responsive">
-            <table class="table table-dark table-hover">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -217,7 +219,7 @@ $payments = $stmt->get_result();
                     <tr>
                         <td><?php echo date('d M Y, h:i A', strtotime($payment['payment_date'])); ?></td>
                         <td>
-                            <a href="view_bill.php?id=<?php echo $payment['bill_id']; ?>" class="text-light">
+                            <a href="view_bill.php?id=<?php echo $payment['bill_id']; ?>" class="text-primary">
                                 <?php echo $payment['bill_number']; ?>
                             </a>
                         </td>
@@ -297,11 +299,11 @@ $payments = $stmt->get_result();
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Payment Amount</label>
-                            <input type="number" class="form-control" name="amount" required min="0" step="0.01">
+                            <input type="number" class="form-control" name="amount" required min="0" step="0.01" autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Payment Method</label>
-                            <select class="form-select" name="payment_method" required>
+                            <select class="form-select" name="payment_method" required autocomplete="off">
                                 <option value="cash">Cash</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                                 <option value="upi">UPI</option>
@@ -309,7 +311,7 @@ $payments = $stmt->get_result();
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Notes</label>
-                            <textarea class="form-control" name="notes" rows="2"></textarea>
+                            <textarea class="form-control" name="notes" rows="2" autocomplete="off"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -339,13 +341,13 @@ $payments = $stmt->get_result();
                         <div class="mb-3">
                             <label class="form-label">Settlement Amount</label>
                             <input type="number" class="form-control" name="amount" id="totalSettlementAmount" required 
-                                   min="0" step="0.01" max="<?php echo $stats['total_due']; ?>"
+                                   min="0" step="0.01" max="<?php echo $stats['total_due']; ?>" autocomplete="off"
                                    onchange="validateTotalSettlementAmount(this)">
                             <div class="form-text">Enter the amount to settle</div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Payment Method</label>
-                            <select class="form-select" name="payment_method" required>
+                            <select class="form-select" name="payment_method" required autocomplete="off">
                                 <option value="cash">Cash</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                                 <option value="upi">UPI</option>
@@ -354,7 +356,7 @@ $payments = $stmt->get_result();
                         <div class="mb-3">
                             <label class="form-label">Notes</label>
                             <textarea class="form-control" name="notes" rows="2" 
-                                      placeholder="Enter any notes about this settlement"></textarea>
+                                      placeholder="Enter any notes about this settlement" autocomplete="off"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

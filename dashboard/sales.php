@@ -87,15 +87,15 @@ $sales->data_seek(0);
                 <form method="GET" class="row g-3" id="filterForm">
                     <div class="col-md-3">
                         <label class="form-label">From Date</label>
-                        <input type="date" class="form-control" name="date_from" value="<?php echo $date_from; ?>" onchange="updateData()">
+                        <input type="date" class="form-control" name="date_from" value="<?php echo $date_from; ?>" onchange="updateData()" autocomplete="off">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">To Date</label>
-                        <input type="date" class="form-control" name="date_to" value="<?php echo $date_to; ?>" onchange="updateData()">
+                        <input type="date" class="form-control" name="date_to" value="<?php echo $date_to; ?>" onchange="updateData()" autocomplete="off">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Category</label>
-                        <select class="form-select" name="category" onchange="updateData()">
+                        <select class="form-select" name="category" onchange="updateData()" autocomplete="off">
                             <option value="">All Categories</option>
                             <?php while ($cat = $categories->fetch_assoc()): ?>
                                 <option value="<?php echo htmlspecialchars($cat['name']); ?>" 

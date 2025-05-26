@@ -88,215 +88,28 @@ $bills = $stmt->get_result();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="../assets/css/style.css" rel="stylesheet">
-    <style>
-        .company-section {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            border: 1px solid #2c3e50;
-            border-radius: 0.5rem;
-            background-color: #34495e;
-            color: white;
-        }
-        .company-header {
-            background-color: #2c3e50;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            border-radius: 0.5rem;
-            color: white;
-        }
-        .company-header h5 {
-            color: #ecf0f1;
-            margin: 0;
-            font-weight: 600;
-        }
-        .product-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .product-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem;
-            background-color: #2c3e50;
-            margin-bottom: 0.5rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
-        }
-        .product-item:hover {
-            background-color: #3498db;
-            transform: translateX(5px);
-        }
-        .product-info {
-            flex: 1;
-            padding-right: 1rem;
-        }
-        .product-name {
-            color: #ecf0f1;
-            font-weight: 600;
-            margin: 0;
-            font-size: 1.1rem;
-        }
-        .product-size {
-            color: #bdc3c7;
-            font-size: 0.9rem;
-            margin-left: 0.5rem;
-        }
-        .product-details {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 0.5rem;
-        }
-        .product-price {
-            color: #2ecc71;
-            font-weight: 600;
-        }
-        .product-stock {
-            color: #ecf0f1;
-        }
-        .product-stock.low {
-            color: #e74c3c;
-        }
-        .product-quantity {
-            width: 150px;
-        }
-        .product-quantity .form-control {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
-            color: white;
-            text-align: center;
-            border-radius: 0;
-        }
-        .product-quantity .input-group-text {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
-            color: white;
-            cursor: pointer;
-            user-select: none;
-            padding: 0.375rem 0.75rem;
-        }
-        .product-quantity .input-group-text:hover {
-            background-color: #3498db;
-        }
-        .product-quantity .input-group-text:active {
-            background-color: #2980b9;
-        }
-        .quantity-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            padding: 0;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        .input-group {
-            margin-top: 1rem;
-        }
-        .input-group-text {
-            background-color: #34495e;
-            color: white;
-            border: 1px solid #2c3e50;
-        }
-        .form-control {
-            background-color: #2c3e50;
-            border: 1px solid #34495e;
-            color: white;
-        }
-        .form-control:focus {
-            background-color: #2c3e50;
-            border-color: #3498db;
-            color: white;
-            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
-        }
-        .form-control::placeholder {
-            color: #95a5a6;
-        }
-        .card {
-            background-color: #34495e;
-            border: none;
-            color: white;
-        }
-        .card-header {
-            background-color: #2c3e50;
-            border-bottom: 1px solid #34495e;
-            color: white;
-        }
-        .card-title {
-            color: #ecf0f1;
-        }
-        .form-label {
-            color: #ecf0f1;
-        }
-        .btn-primary {
-            background-color: #3498db;
-            border-color: #3498db;
-        }
-        .btn-primary:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-        }
-        .btn-secondary {
-            background-color: #95a5a6;
-            border-color: #95a5a6;
-        }
-        .btn-secondary:hover {
-            background-color: #7f8c8d;
-            border-color: #7f8c8d;
-        }
-        .table {
-            color: white;
-        }
-        .table thead th {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            border-color: #34495e;
-        }
-        .table tbody td {
-            border-color: #34495e;
-        }
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(44, 62, 80, 0.5);
-        }
-        .table-striped tbody tr:nth-of-type(even) {
-            background-color: rgba(52, 73, 94, 0.5);
-        }
-        .modal-content {
-            background-color: #34495e;
-            color: white;
-        }
-        .modal-header {
-            background-color: #2c3e50;
-            border-bottom: 1px solid #34495e;
-        }
-        .modal-footer {
-            background-color: #2c3e50;
-            border-top: 1px solid #34495e;
-        }
-        .btn-close {
-            filter: invert(1) grayscale(100%) brightness(200%);
-        }
+    <!-- <style>
         .search-section {
-            background-color: #2c3e50;
-            padding: 1.5rem;
+            background-color: #f8f9fa;
+            padding: 0.25rem 0.5rem;
             border-radius: 0.5rem;
             margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
         }
-        .search-section .form-control {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
-            color: white;
+        .search-section .row,
+        .search-section .col-md-6,
+        .search-section .col-md-10,
+        .search-section .col-md-2,
+        .search-section form {
+            margin: 0 !important;
+            padding: 0 !important;
         }
-        .search-section .btn {
-            background-color: #3498db;
-            border-color: #3498db;
+        .search-section .g-2,
+        .search-section .g-3 {
+            --bs-gutter-x: 0.25rem;
+            --bs-gutter-y: 0.25rem;
         }
-        .search-section .btn:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-        }
-    </style>
+    </style> -->
 </head>
 <body>
     <?php include '../includes/navbar.php'; ?>
@@ -311,33 +124,16 @@ $bills = $stmt->get_result();
 
         <!-- Search and Date Filter Forms -->
         <div class="search-section">
-            <div class="row g-3">
-                <!-- Search Form -->
-                <div class="col-md-6">
-                    <form method="GET" class="row g-2" id="searchForm">
-                        <div class="col-md-10">
-                            <input type="text" class="form-control" id="searchInput" name="search" 
-                                   placeholder="Search by bill number, customer name, phone or village" 
-                                   value="<?php echo htmlspecialchars($search); ?>">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">Search</button>
-                        </div>
-                    </form>
+            <form method="GET" id="searchForm">
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="text" class="form-control" id="searchInput" name="search" 
+                        placeholder="Search by bill number, customer name, phone or village" 
+                        value="<?php echo htmlspecialchars($search); ?>" autocomplete="off">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+                    <input type="date" class="form-control" id="dateFrom" name="date_from" value="<?php echo htmlspecialchars($date_from); ?>" autocomplete="off">
+                    <input type="date" class="form-control" id="dateTo" name="date_to" value="<?php echo htmlspecialchars($date_to); ?>" autocomplete="off">
                 </div>
-
-                <!-- Date Filter Form -->
-                <div class="col-md-6">
-                    <div class="row g-2">
-                        <div class="col-md-5">
-                            <input type="date" class="form-control" id="dateFrom" value="<?php echo htmlspecialchars($date_from); ?>">
-                        </div>
-                        <div class="col-md-5">
-                            <input type="date" class="form-control" id="dateTo" value="<?php echo htmlspecialchars($date_to); ?>">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
 
         <div class="card">
@@ -439,8 +235,8 @@ $bills = $stmt->get_result();
                                                             <input type="number" class="form-control product-quantity" 
                                                                    name="products[<?php echo $product['id']; ?>][quantity]" 
                                                                    min="0" max="<?php echo $product['quantity']; ?>" 
-                                                                   value="0" 
-                                                data-price="<?php echo $product['price_per_unit']; ?>"
+                                                                   value="0" autocomplete="off"
+                                                                   data-price="<?php echo $product['price_per_unit']; ?>"
                                                                    data-name="<?php echo htmlspecialchars($product['name']); ?>"
                                                                    data-size="<?php echo htmlspecialchars($product['size']); ?>"
                                                                    data-product-id="<?php echo $product['id']; ?>">
@@ -467,15 +263,15 @@ $bills = $stmt->get_result();
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label class="form-label">Customer Name</label>
-                                            <input type="text" class="form-control" name="customer_name" required>
+                                            <input type="text" class="form-control" name="customer_name" required autocomplete="off">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Phone Number</label>
-                                            <input type="tel" class="form-control" name="phone_number">
+                                            <input type="tel" class="form-control" name="phone_number" autocomplete="off">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Address</label>
-                                            <textarea class="form-control" name="address" rows="3"></textarea>
+                                            <textarea class="form-control" name="address" rows="3" autocomplete="off"></textarea>
                                         </div>
                                         <hr>
                                         <div class="d-flex justify-content-between mb-2">
@@ -668,7 +464,7 @@ $bills = $stmt->get_result();
                                     <td>${item.name}</td>
                                     <td>
                                         <input type="number" class="form-control form-control-sm" 
-                                               name="quantities[${item.id}]" value="${item.quantity}" min="1">
+                                               name="quantities[${item.id}]" value="${item.quantity}" min="1" autocomplete="off">
                                     </td>
                                     <td>₹${parseFloat(item.price).toFixed(2)}</td>
                                     <td>₹${parseFloat(item.subtotal).toFixed(2)}</td>

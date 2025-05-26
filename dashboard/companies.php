@@ -33,21 +33,22 @@ $companies = $conn->query($query);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .company-card {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            color: white;
+            color: #333333;
             margin-bottom: 1rem;
             transition: transform 0.2s;
         }
         .company-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .company-header {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             padding: 1rem;
             border-radius: 0.5rem 0.5rem 0 0;
+            border-bottom: 1px solid #e0e0e0;
         }
         .company-body {
             padding: 1rem;
@@ -55,17 +56,17 @@ $companies = $conn->query($query);
         .stat-value {
             font-size: 1.2rem;
             font-weight: bold;
-            color: #3498db;
+            color: #007bff;
         }
         .stat-label {
             font-size: 0.8rem;
-            color: #bdc3c7;
+            color: #6c757d;
         }
         .stock-low {
-            color: #e74c3c;
+            color: #dc3545;
         }
         .stock-ok {
-            color: #2ecc71;
+            color: #28a745;
         }
     </style>
 </head>
@@ -160,7 +161,7 @@ $companies = $conn->query($query);
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Company Name</label>
-                            <input type="text" class="form-control" name="company_name" required>
+                            <input type="text" class="form-control" name="company_name" required autocomplete="off">
                         </div>
                     </div>
                     <div class="modal-footer">

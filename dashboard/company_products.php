@@ -53,47 +53,48 @@ $stats = $stmt->get_result()->fetch_assoc();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .stats-card {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            color: white;
+            color: #333333;
             padding: 1rem;
             margin-bottom: 1rem;
         }
         .stat-value {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #3498db;
+            color: #007bff;
         }
         .stat-label {
             font-size: 0.9rem;
-            color: #bdc3c7;
+            color: #6c757d;
         }
         .product-card {
-            background-color: #34495e;
-            border: 1px solid #2c3e50;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            color: white;
+            color: #333333;
             margin-bottom: 1rem;
             transition: transform 0.2s;
         }
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .product-header {
-            background-color: #2c3e50;
+            background-color: #f8f9fa;
             padding: 1rem;
             border-radius: 0.5rem 0.5rem 0 0;
+            border-bottom: 1px solid #e0e0e0;
         }
         .product-body {
             padding: 1rem;
         }
         .stock-low {
-            color: #e74c3c;
+            color: #dc3545;
         }
         .stock-ok {
-            color: #2ecc71;
+            color: #28a745;
         }
     </style>
 </head>
@@ -221,15 +222,15 @@ $stats = $stmt->get_result()->fetch_assoc();
                         <input type="hidden" name="company" value="<?php echo htmlspecialchars($company); ?>">
                         <div class="mb-3">
                             <label class="form-label">Product Name</label>
-                            <input type="text" class="form-control" name="name" required>
+                            <input type="text" class="form-control" name="name" required autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Size</label>
-                            <input type="text" class="form-control" name="size" placeholder="e.g., 500ml, 1L, 5kg">
+                            <input type="text" class="form-control" name="size" placeholder="e.g., 500ml, 1L, 5kg" autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Category</label>
-                            <select class="form-control" name="category_id" required>
+                            <select class="form-control" name="category_id" required autocomplete="off">
                                 <?php
                                 $categories = $conn->query("
                                     SELECT * FROM categories 
@@ -244,15 +245,15 @@ $stats = $stmt->get_result()->fetch_assoc();
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Price per Unit</label>
-                            <input type="number" class="form-control" name="price_per_unit" step="0.01" required>
+                            <input type="number" class="form-control" name="price_per_unit" step="0.01" required autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Quantity</label>
-                            <input type="number" class="form-control" name="quantity" required>
+                            <input type="number" class="form-control" name="quantity" required autocomplete="off">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Low Stock Threshold</label>
-                            <input type="number" class="form-control" name="low_stock_threshold" required>
+                            <input type="number" class="form-control" name="low_stock_threshold" required autocomplete="off">
                         </div>
                     </div>
                     <div class="modal-footer">
