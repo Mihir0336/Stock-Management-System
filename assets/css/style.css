@@ -1,0 +1,450 @@
+/* Custom Variables */
+:root {
+    --primary-color: #1e293b;
+    --secondary-color: #334155;
+    --accent-color: #3b82f6;
+    --accent-hover: #2563eb;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --dark-bg: #0f172a;
+    --card-bg: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --border-color: rgba(148, 163, 184, 0.1);
+    --hover-color: rgba(51, 65, 85, 0.5);
+}
+
+/* Global Styles */
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem;
+}
+
+.card-title {
+    color: var(--text-primary) !important;
+}
+
+.card-text {
+    color: var(--text-primary) !important;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    height: 100%;
+    background: linear-gradient(135deg, var(--card-bg), var(--secondary-color));
+    border: 1px solid var(--border-color);
+}
+
+.dashboard-card:hover {
+    border-color: var(--accent-color);
+}
+
+.dashboard-card .card-body {
+    padding: 1.25rem;
+}
+
+.dashboard-card .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.dashboard-card .card-text {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.stats-icon {
+    font-size: 2rem;
+    opacity: 0.9;
+    margin-bottom: 0.75rem;
+    color: var(--accent-color);
+}
+
+/* Table Styles */
+.table {
+    margin-bottom: 0;
+    color: var(--text-primary) !important;
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color);
+}
+
+.table-secondary,
+.table-secondary > th,
+.table-secondary > td {
+    background-color: var(--primary-color) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.table th {
+    font-weight: 600;
+    color: var(--text-secondary) !important;
+    border-top: none;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--secondary-color) !important;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    font-size: 0.875rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--hover-color) !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--secondary-color) !important;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: var(--card-bg) !important;
+}
+
+.table-bordered {
+    border: 1px solid var(--border-color);
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid var(--border-color);
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+/* Form Styles */
+.form-control, .form-select {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary) !important;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--secondary-color);
+    border-color: var(--accent-color);
+    color: var(--text-primary) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.7;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.35em 0.65em;
+    font-weight: 500;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: var(--text-primary) !important;
+}
+
+.badge.bg-light {
+    background-color: var(--secondary-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.badge.bg-primary {
+    background-color: var(--accent-color) !important;
+    color: white !important;
+}
+
+/* Modal Styles */
+.modal-content {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary) !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem;
+    background-color: var(--secondary-color);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 1rem;
+    background-color: var(--secondary-color);
+}
+
+.modal-title {
+    color: var(--text-primary) !important;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Container and Spacing */
+.container {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.row {
+    margin-bottom: 1.5rem;
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: var(--primary-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+    min-height: 50px;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    color: var(--text-primary) !important;
+    font-size: 1.1rem;
+    padding: 0.5rem 0;
+}
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.nav-link:hover {
+    background-color: var(--hover-color);
+    color: var(--text-primary) !important;
+}
+
+.nav-link.active {
+    background-color: var(--accent-color);
+    color: white !important;
+}
+
+/* Alert Styles */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    background-color: var(--card-bg);
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+    font-size: 0.875rem;
+}
+
+/* Pagination Styles */
+.pagination {
+    margin-bottom: 0;
+}
+
+.page-link {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary) !important;
+    padding: 0.4rem 0.8rem;
+    margin: 0 0.2rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.page-link:hover {
+    background-color: var(--hover-color);
+    color: var(--text-primary) !important;
+    border-color: var(--accent-color);
+}
+
+.page-item.active .page-link {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
+/* Text Colors */
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-accent { color: var(--accent-color) !important; }
+
+/* Background Colors */
+.bg-primary { background-color: var(--primary-color) !important; }
+.bg-secondary { background-color: var(--secondary-color) !important; }
+.bg-dark { background-color: var(--dark-bg) !important; }
+.bg-accent { background-color: var(--accent-color) !important; }
+
+/* Accordion Styles */
+.accordion {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.accordion-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.accordion-button {
+    background-color: var(--secondary-color);
+    color: var(--text-primary) !important;
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--accent-color);
+    color: white !important;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+    border-color: var(--accent-color);
+}
+
+.accordion-body {
+    background-color: var(--card-bg);
+    color: var(--text-primary) !important;
+    font-size: 0.875rem;
+    padding: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .table th, .table td {
+        padding: 0.75rem;
+    }
+}
+
+/* Category Styles */
+.category-badge {
+    background-color: var(--secondary-color) !important;
+    color: var(--text-primary) !important;
+    padding: 0.35em 0.65em;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid var(--border-color);
+}
+
+.category-badge:hover {
+    background-color: var(--hover-color) !important;
+    border-color: var(--accent-color);
+}
+
+.category-select {
+    background-color: var(--secondary-color);
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    width: 100%;
+    cursor: pointer;
+}
+
+.category-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.category-select option {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    padding: 0.5rem;
+}
+
+.category-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+} 
