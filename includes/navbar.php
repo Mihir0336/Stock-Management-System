@@ -120,9 +120,9 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'sales.php' ? 'active' : ''; ?>" 
-                           href="/agri/dashboard/sales.php">
-                            <i class="bi bi-graph-up"></i> Sales
+                        <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'company_sales.php' ? 'active' : ''; ?>" 
+                           href="/agri/dashboard/company_sales.php">
+                            <i class="bi bi-building"></i> Company Sales
                         </a>
                     </li>
                     <li class="nav-item">

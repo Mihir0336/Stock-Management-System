@@ -3,7 +3,7 @@
 $host = 'localhost';
 $user = 'root';
 $pass = '';
-$dbname = 'agrico_stock_management';
+$dbname = 'shiv_agro';
 
 // Create connection without database
 $conn = new mysqli($host, $user, $pass);
@@ -154,6 +154,7 @@ $sql = "CREATE TABLE IF NOT EXISTS bills (
     payment_status ENUM('paid', 'partial', 'unpaid') DEFAULT 'unpaid',
     amount_paid DECIMAL(10,2) DEFAULT 0.00,
     amount_due DECIMAL(10,2) DEFAULT 0.00,
+    discount_amount DECIMAL(10,2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
@@ -200,6 +201,7 @@ $sql = "CREATE TABLE IF NOT EXISTS bill_items (
     product_id INT,
     quantity DECIMAL(10,2) NOT NULL,
     price_per_unit DECIMAL(10,2) NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (bill_id) REFERENCES bills(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,

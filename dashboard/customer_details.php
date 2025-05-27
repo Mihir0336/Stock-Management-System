@@ -56,7 +56,8 @@ $stmt = $conn->prepare("
         MIN(created_at) as first_purchase,
         MAX(created_at) as last_purchase,
         SUM(amount_due) as total_due,
-        SUM(amount_paid) as total_paid
+        SUM(amount_paid) as total_paid,
+        SUM(discount_amount) as total_discounts
     FROM bills
     WHERE customer_id = ?
 ");
@@ -162,25 +163,31 @@ $payments = $stmt->get_result();
 
         <!-- Statistics -->
         <div class="row mb-4">
-            <div class="col-md-3 mb-3">
+            <div class="col-md-2 mb-3">
                 <div class="stat-card">
                     <div class="stat-value"><?php echo $stats['total_bills']; ?></div>
                     <div class="stat-label">Total Bills</div>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
+            <div class="col-md-2 mb-3">
                 <div class="stat-card">
                     <div class="stat-value">₹<?php echo number_format($stats['total_spent'], 0); ?></div>
                     <div class="stat-label">Total Spent</div>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
+            <div class="col-md-2 mb-3">
                 <div class="stat-card">
                     <div class="stat-value">₹<?php echo number_format($stats['total_paid'], 0); ?></div>
                     <div class="stat-label">Total Paid</div>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
+            <div class="col-md-2 mb-3">
+                <div class="stat-card">
+                    <div class="stat-value text-success">₹<?php echo number_format($stats['total_discounts'], 0); ?></div>
+                    <div class="stat-label">Total Discounts</div>
+                </div>
+            </div>
+            <div class="col-md-2 mb-3">
                 <div class="stat-card">
                     <div class="stat-value <?php echo $stats['total_due'] > 0 ? 'text-danger' : 'text-success'; ?>">
                         ₹<?php echo number_format($stats['total_due'], 0); ?>
@@ -336,18 +343,19 @@ $payments = $stmt->get_result();
                         <input type="hidden" name="customer_id" value="<?php echo $customer_id; ?>">
                         <div class="mb-3">
                             <label class="form-label">Total Amount Due</label>
-                            <input type="text" class="form-control" value="₹<?php echo number_format($stats['total_due'], 2); ?>" readonly>
+                            <input type="text" class="form-control" id="totalDues" value="₹<?php echo number_format($stats['total_due'], 2); ?>" readonly>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Settlement Amount</label>
-                            <input type="number" class="form-control" name="amount" id="totalSettlementAmount" required 
-                                   min="0" step="0.01" max="<?php echo $stats['total_due']; ?>" autocomplete="off"
-                                   onchange="validateTotalSettlementAmount(this)">
-                            <div class="form-text">Enter the amount to settle</div>
+                            <label class="form-label">Discount Amount</label>
+                            <input type="number" class="form-control" id="discountAmount" name="discount_amount" min="0" step="0.01" value="0" max="<?php echo $stats['total_due']; ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amount to be Settled</label>
+                            <input type="number" class="form-control" id="settlementAmount" name="amount" required min="0" step="0.01" max="<?php echo $stats['total_due']; ?>">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Payment Method</label>
-                            <select class="form-select" name="payment_method" required autocomplete="off">
+                            <select class="form-select" name="payment_method" required>
                                 <option value="cash">Cash</option>
                                 <option value="bank_transfer">Bank Transfer</option>
                                 <option value="upi">UPI</option>
@@ -355,8 +363,7 @@ $payments = $stmt->get_result();
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Notes</label>
-                            <textarea class="form-control" name="notes" rows="2" 
-                                      placeholder="Enter any notes about this settlement" autocomplete="off"></textarea>
+                            <textarea class="form-control" name="notes" rows="2" placeholder="Enter any notes about this settlement"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -377,31 +384,82 @@ $payments = $stmt->get_result();
             new bootstrap.Modal(document.getElementById('paymentModal')).show();
         }
 
-        function validateTotalSettlementAmount(input) {
-            const maxAmount = parseFloat(input.getAttribute('max'));
-            const enteredAmount = parseFloat(input.value);
+        function calculateTotalSettlement() {
+            let totalDues = 0;
+            let totalSettled = 0;
             
-            if (enteredAmount > maxAmount) {
-                alert('Settlement amount cannot exceed the total amount due');
-                input.value = maxAmount;
-            }
+            // Calculate total dues and settled amount
+            document.querySelectorAll('.bill-row').forEach(row => {
+                const billAmount = parseFloat(row.querySelector('.bill-amount').textContent);
+                const settledAmount = parseFloat(row.querySelector('.settled-amount').textContent);
+                totalDues += billAmount;
+                totalSettled += settledAmount;
+            });
+            
+            const remainingDues = totalDues - totalSettled;
+            document.getElementById('totalDues').value = remainingDues.toFixed(2);
+            document.getElementById('settlementAmount').value = remainingDues.toFixed(2);
+            document.getElementById('remainingDues').value = '0.00';
         }
+
+        function updateRemainingDues() {
+            const totalDues = parseFloat(document.getElementById('totalDues').value) || 0;
+            const discountAmount = parseFloat(document.getElementById('discountAmount').value) || 0;
+            const settlementAmount = parseFloat(document.getElementById('settlementAmount').value) || 0;
+            
+            // Calculate remaining dues after discount and settlement
+            const remainingDues = totalDues - discountAmount - settlementAmount;
+            document.getElementById('remainingDues').value = remainingDues.toFixed(2);
+        }
+
+        // Update settlement amount when discount changes
+        document.getElementById('discountAmount').addEventListener('input', function() {
+            const totalDues = <?php echo $stats['total_due']; ?>;
+            const discountAmount = parseFloat(this.value) || 0;
+            
+            if (discountAmount > totalDues) {
+                alert('Discount amount cannot exceed total dues');
+                this.value = totalDues;
+                return;
+            }
+            
+            // Calculate remaining amount after discount
+            const remainingAmount = totalDues - discountAmount;
+            document.getElementById('settlementAmount').value = remainingAmount.toFixed(2);
+        });
+
+        // Validate settlement amount
+        document.getElementById('settlementAmount').addEventListener('input', function() {
+            const totalDues = <?php echo $stats['total_due']; ?>;
+            const discountAmount = parseFloat(document.getElementById('discountAmount').value) || 0;
+            const settlementAmount = parseFloat(this.value) || 0;
+            const remainingAmount = totalDues - discountAmount;
+            
+            if (settlementAmount > remainingAmount) {
+                alert('Settlement amount cannot exceed the remaining amount after discount');
+                this.value = remainingAmount.toFixed(2);
+            }
+        });
 
         // Total Settlement form handler
         document.getElementById('totalSettlementForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
             const amount = parseFloat(formData.get('amount'));
-            const maxAmount = parseFloat(document.getElementById('totalSettlementAmount').getAttribute('max'));
+            const discountAmount = parseFloat(formData.get('discount_amount'));
+            const totalDues = <?php echo $stats['total_due']; ?>;
+            const remainingAmount = totalDues - discountAmount;
 
-            if (amount > maxAmount) {
-                alert('Settlement amount cannot exceed the total amount due');
+            if (amount > remainingAmount) {
+                alert('Settlement amount cannot exceed the remaining amount after discount');
                 return;
             }
 
-            // Add settlement flag
+            // Add settlement flag and total amount
             formData.append('is_settlement', '1');
             formData.append('is_total_settlement', '1');
+            formData.append('total_amount', totalDues);
+            formData.append('discount_amount', discountAmount);
 
             // Show loading state
             const submitButton = this.querySelector('button[type="submit"]');
@@ -413,15 +471,11 @@ $payments = $stmt->get_result();
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.reload();
+                    alert('Settlement processed successfully!');
+                    location.reload();
                 } else {
                     alert(data.message || 'Error processing settlement');
                 }
@@ -431,7 +485,6 @@ $payments = $stmt->get_result();
                 alert('Error processing settlement. Please try again.');
             })
             .finally(() => {
-                // Reset button state
                 submitButton.disabled = false;
                 submitButton.innerHTML = originalText;
             });

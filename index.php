@@ -243,7 +243,7 @@ $categories = $conn->query("
                 </div>
             </div>
             <div class="col-md-3 mb-4">
-                <div class="dashboard-card" onclick="window.location.href='dashboard/sales.php'">
+                <div class="dashboard-card" onclick="window.location.href='dashboard/company_sales.php'">
                     <div class="stats-icon">
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>

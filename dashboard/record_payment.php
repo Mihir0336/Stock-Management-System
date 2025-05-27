@@ -63,7 +63,8 @@ try {
         }
 
         $customer_id = (int)$_POST['customer_id'];
-        $remaining_amount = $amount;
+        $discount_amount = isset($_POST['discount_amount']) ? (float)$_POST['discount_amount'] : 0;
+        $settlement_amount = $amount;
 
         // Get all unpaid bills for the customer
         $stmt = $conn->prepare("
@@ -92,37 +93,81 @@ try {
             sendJsonResponse(false, 'Database error in get_result: ' . $stmt->error);
         }
 
-        while (($bill = $bills->fetch_assoc()) && $remaining_amount > 0) {
-            $payment_amount = min($remaining_amount, $bill['amount_due']);
-            
-            // Record payment for this bill
-            $stmt = $conn->prepare("
-                INSERT INTO payments (
-                    bill_id,
-                    customer_id,
-                    amount,
-                    payment_method,
-                    notes,
-                    payment_date,
-                    created_by
-                ) VALUES (?, ?, ?, ?, ?, NOW(), ?)
-            ");
+        // Calculate total due
+        $total_due = 0;
+        $bills_array = [];
+        while ($bill = $bills->fetch_assoc()) {
+            $total_due += $bill['amount_due'];
+            $bills_array[] = $bill;
+        }
 
+        // Calculate total payment and remaining due
+        $total_payment = $discount_amount + $settlement_amount;
+        $remaining_due = $total_due - $total_payment;
+
+        // Validate total payment
+        if ($total_payment > $total_due) {
+            $conn->rollback();
+            sendJsonResponse(false, 'Total payment (discount + settlement) cannot exceed total due amount');
+        }
+
+        // Update bills with discount amount
+        if ($discount_amount > 0) {
+            $stmt = $conn->prepare("
+                UPDATE bills 
+                SET discount_amount = discount_amount + ?,
+                    amount_due = amount_due - ?
+                WHERE customer_id = ? AND amount_due > 0
+            ");
+            
             if (!$stmt) {
                 $conn->rollback();
-                sendJsonResponse(false, 'Database error in prepare payment: ' . $conn->error);
+                sendJsonResponse(false, 'Database error in prepare discount update: ' . $conn->error);
             }
 
-            $bill_notes = $notes . " (Total Settlement)";
-            $stmt->bind_param("iidssi", $bill['id'], $customer_id, $payment_amount, $payment_method, $bill_notes, $_SESSION['user_id']);
+            $stmt->bind_param("ddi", $discount_amount, $discount_amount, $customer_id);
             
             if (!$stmt->execute()) {
                 $conn->rollback();
-                sendJsonResponse(false, 'Database error in execute payment: ' . $stmt->error);
+                sendJsonResponse(false, 'Database error in execute discount update: ' . $stmt->error);
             }
+        }
 
+        // Make a single payment entry for the total amount
+        $stmt = $conn->prepare("
+            INSERT INTO payments (
+                bill_id,
+                customer_id,
+                amount,
+                payment_method,
+                notes,
+                payment_date,
+                created_by
+            ) VALUES (?, ?, ?, ?, ?, NOW(), ?)
+        ");
+
+        if (!$stmt) {
+            $conn->rollback();
+            sendJsonResponse(false, 'Database error in prepare payment: ' . $conn->error);
+        }
+
+        $payment_notes = $notes;
+        if ($discount_amount > 0) {
+            $payment_notes .= " (Discount: ₹" . number_format($discount_amount, 2) . ")";
+        }
+        $payment_notes .= " (Settlement: ₹" . number_format($settlement_amount, 2) . ")";
+        
+        $stmt->bind_param("iidssi", $bills_array[0]['id'], $customer_id, $total_payment, $payment_method, $payment_notes, $_SESSION['user_id']);
+        
+        if (!$stmt->execute()) {
+            $conn->rollback();
+            sendJsonResponse(false, 'Database error in execute payment: ' . $stmt->error);
+        }
+
+        // Update all bills with settlement amount
+        foreach ($bills_array as $bill) {
             // Update bill
-            $new_amount_paid = $bill['amount_paid'] + $payment_amount;
+            $new_amount_paid = $bill['amount_paid'] + $total_payment;
             $new_amount_due = $bill['total_amount'] - $new_amount_paid;
             $payment_status = $new_amount_due <= 0 ? 'paid' : 'partial';
 
@@ -145,13 +190,6 @@ try {
                 $conn->rollback();
                 sendJsonResponse(false, 'Database error in execute update: ' . $stmt->error);
             }
-
-            $remaining_amount -= $payment_amount;
-        }
-
-        if ($remaining_amount > 0) {
-            $conn->rollback();
-            sendJsonResponse(false, 'Payment amount exceeds total due amount');
         }
     } else {
         // Handle single bill payment

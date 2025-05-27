@@ -119,9 +119,6 @@ $customers = $stmt->get_result();
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Customers</h2>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                <i class="bi bi-plus"></i> Add Customer
-            </button>
         </div>
 
         <!-- Search Form -->
@@ -206,38 +203,6 @@ $customers = $stmt->get_result();
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Customer Modal -->
-    <div class="modal fade" id="addCustomerModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Customer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="addCustomerForm">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Customer Name</label>
-                            <input type="text" class="form-control" name="name" required autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Phone Number</label>
-                            <input type="tel" class="form-control" name="phone" autocomplete="off">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Village</label>
-                            <input type="text" class="form-control" name="village" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Add Customer</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
