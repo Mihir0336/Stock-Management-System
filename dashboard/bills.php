@@ -236,7 +236,7 @@ $bills = $stmt->get_result();
                                                                    name="products[<?php echo $product['id']; ?>][quantity]" 
                                                                    min="0" max="<?php echo $product['quantity']; ?>" 
                                                                    value="0" autocomplete="off"
-                                                                   data-price="<?php echo $product['price_per_unit']; ?>"
+                                                data-price="<?php echo $product['price_per_unit']; ?>"
                                                                    data-name="<?php echo htmlspecialchars($product['name']); ?>"
                                                                    data-size="<?php echo htmlspecialchars($product['size']); ?>"
                                                                    data-product-id="<?php echo $product['id']; ?>">
