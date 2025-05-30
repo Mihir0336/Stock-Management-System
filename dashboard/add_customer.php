@@ -41,27 +41,6 @@ try {
     // Start transaction
     $conn->begin_transaction();
 
-    // Check if customer with same name or phone already exists
-    $checkQuery = "SELECT id, name, phone FROM customers WHERE name = ? OR phone = ?";
-    $checkStmt = $conn->prepare($checkQuery);
-    $checkStmt->bind_param("ss", $name, $phone);
-    $checkStmt->execute();
-    $result = $checkStmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $existingCustomer = $result->fetch_assoc();
-        $conn->rollback();
-        
-        // Provide specific message based on what matched
-        if ($existingCustomer['name'] === $name && $existingCustomer['phone'] === $phone) {
-            sendJsonResponse(false, 'A customer with this name and phone number already exists');
-        } elseif ($existingCustomer['name'] === $name) {
-            sendJsonResponse(false, 'A customer with this name already exists');
-        } else {
-            sendJsonResponse(false, 'A customer with this phone number already exists');
-        }
-    }
-
     // Insert customer
     $stmt = $conn->prepare("INSERT INTO customers (name, phone, village) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $name, $phone, $village);
