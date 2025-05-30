@@ -47,6 +47,26 @@ $stmt->bind_param("i", $customer_id);
 $stmt->execute();
 $bills = $stmt->get_result();
 
+// Get due bills
+$stmt = $conn->prepare("
+    SELECT 
+        b.*,
+        COUNT(bi.id) as total_items,
+        GROUP_CONCAT(
+            CONCAT(p.name, ' (', p.size, ') - ', bi.quantity, ' units - ', p.company)
+            SEPARATOR '\n'
+        ) as items_list
+    FROM bills b
+    LEFT JOIN bill_items bi ON b.id = bi.bill_id
+    LEFT JOIN products p ON bi.product_id = p.id
+    WHERE b.customer_id = ? AND b.amount_due > 0
+    GROUP BY b.id
+    ORDER BY b.created_at DESC
+");
+$stmt->bind_param("i", $customer_id);
+$stmt->execute();
+$due_bills = $stmt->get_result();
+
 // Get customer statistics
 $stmt = $conn->prepare("
     SELECT 
@@ -136,6 +156,107 @@ $payments = $stmt->get_result();
             color: #6c757d;
             font-size: 0.9rem;
         }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-section, .print-section * {
+                visibility: visible;
+            }
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: block !important;
+                font-family: Arial, sans-serif;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .table {
+                border-collapse: collapse;
+                width: 100%;
+                margin: 15px 0;
+                font-size: 12px;
+            }
+            .table th, .table td {
+                border: 1px solid #000;
+                padding: 8px;
+                text-align: left;
+            }
+            .table th {
+                background-color: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-weight: bold;
+            }
+            .print-header {
+                text-align: center;
+                margin-bottom: 30px;
+                padding: 20px;
+                border-bottom: 2px solid #000;
+            }
+            .print-header h2 {
+                margin: 0;
+                font-size: 24px;
+                color: #000;
+                font-weight: bold;
+            }
+            .print-header p {
+                margin: 5px 0;
+                color: #333;
+                font-size: 14px;
+            }
+            .print-summary {
+                margin: 20px 0;
+                padding: 15px;
+                border: 1px solid #000;
+                background-color: #f8f9fa;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .print-summary p {
+                margin: 5px 0;
+                font-size: 13px;
+                padding: 5px;
+                border-bottom: 1px solid #ddd;
+            }
+            .print-summary strong {
+                color: #000;
+                font-weight: bold;
+            }
+            .section-title {
+                font-size: 16px;
+                font-weight: bold;
+                margin: 20px 0 10px 0;
+                padding-bottom: 5px;
+                border-bottom: 1px solid #000;
+            }
+            .bill-items {
+                font-size: 11px;
+                color: #333;
+                line-height: 1.4;
+            }
+            .amount-cell {
+                text-align: right;
+                font-weight: bold;
+            }
+            .due-amount {
+                color: #d9534f;
+                font-weight: bold;
+            }
+            @page {
+                margin: 1.5cm;
+                size: A4;
+            }
+        }
+        .print-section {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -146,71 +267,80 @@ $payments = $stmt->get_result();
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h2 class="mb-1"><?php echo htmlspecialchars($customer['name']); ?></h2>
-                    <div class="mb-2">
-                        <i class="bi bi-telephone"></i> 
-                        <?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?>
+                    <div class="text-muted">
+                        <?php if ($customer['phone']): ?>
+                            <span class="me-3"><i class="bi bi-telephone"></i> <?php echo htmlspecialchars($customer['phone']); ?></span>
+                        <?php endif; ?>
+                        <?php if ($customer['village']): ?>
+                            <span><i class="bi bi-geo-alt"></i> <?php echo htmlspecialchars($customer['village']); ?></span>
+                        <?php endif; ?>
                     </div>
-                    <div>
-                        <i class="bi bi-geo-alt"></i> 
-                        <?php echo htmlspecialchars($customer['village'] ?? 'N/A'); ?>
-                    </div>
                 </div>
-                <a href="customers.php" class="btn btn-outline-light">
-                    <i class="bi bi-arrow-left"></i> Back to Customers
-                </a>
-            </div>
-        </div>
-
-        <!-- Statistics -->
-        <div class="row mb-4">
-            <div class="col-md-2 mb-3">
-                <div class="stat-card">
-                    <div class="stat-value"><?php echo $stats['total_bills']; ?></div>
-                    <div class="stat-label">Total Bills</div>
-                </div>
-            </div>
-            <div class="col-md-2 mb-3">
-                <div class="stat-card">
-                    <div class="stat-value">₹<?php echo number_format($stats['total_spent'], 0); ?></div>
-                    <div class="stat-label">Total Spent</div>
-                </div>
-            </div>
-            <div class="col-md-2 mb-3">
-                <div class="stat-card">
-                    <div class="stat-value">₹<?php echo number_format($stats['total_paid'], 0); ?></div>
-                    <div class="stat-label">Total Paid</div>
-                </div>
-            </div>
-            <div class="col-md-2 mb-3">
-                <div class="stat-card">
-                    <div class="stat-value text-success">₹<?php echo number_format($stats['total_discounts'], 0); ?></div>
-                    <div class="stat-label">Total Discounts</div>
-                </div>
-            </div>
-            <div class="col-md-2 mb-3">
-                <div class="stat-card">
-                    <div class="stat-value <?php echo $stats['total_due'] > 0 ? 'text-danger' : 'text-success'; ?>">
-                        ₹<?php echo number_format($stats['total_due'], 0); ?>
-                    </div>
-                    <div class="stat-label">Amount Due</div>
+                <div>
+                    <a href="customers.php" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Customers
+                    </a>
+                    <button onclick="window.print()" class="btn btn-primary ms-2">
+                        <i class="bi bi-printer"></i> Print Payment History
+                    </button>
                 </div>
             </div>
         </div>
 
-        <?php if ($stats['total_due'] > 0): ?>
-        <!-- Total Settlement Button -->
-        <div class="mb-4">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#totalSettlementModal">
-                <i class="bi bi-cash-coin"></i> Total Settlement
-            </button>
-        </div>
-        <?php endif; ?>
+        <!-- Print Section -->
+        <div class="print-section">
+            <div class="print-header">
+                <h2>Customer Payment Report</h2>
+                <p>Customer: <?php echo htmlspecialchars($customer['name']); ?></p>
+                <p>Date: <?php echo date('d M Y'); ?></p>
+            </div>
+            
+            <div class="print-summary">
+                <p><strong>Total Bills:</strong> <?php echo $stats['total_bills']; ?></p>
+                <p><strong>Total Spent:</strong> ₹<?php echo number_format($stats['total_spent'], 0); ?></p>
+                <p><strong>Total Paid:</strong> ₹<?php echo number_format($stats['total_paid'], 0); ?></p>
+                <p><strong>Total Discounts:</strong> ₹<?php echo number_format($stats['total_discounts'], 0); ?></p>
+                <p><strong>Amount Due:</strong> ₹<?php echo number_format($stats['total_due'], 0); ?></p>
+            </div>
 
-        <!-- Payment History -->
-        <h3 class="mb-3">Payment History</h3>
-        <?php if ($payments->num_rows > 0): ?>
-        <div class="table-responsive">
-            <table class="table table-striped table-hover">
+            <?php if ($due_bills->num_rows > 0): ?>
+            <div class="section-title">Due Bills</div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Bill Number</th>
+                        <th>Date</th>
+                        <th>Total Amount</th>
+                        <th>Amount Due</th>
+                        <th>Items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    $due_bills->data_seek(0);
+                    while ($bill = $due_bills->fetch_assoc()): 
+                    ?>
+                    <tr>
+                        <td><?php echo $bill['bill_number']; ?></td>
+                        <td><?php echo date('d M Y', strtotime($bill['created_at'])); ?></td>
+                        <td class="amount-cell">₹<?php echo number_format($bill['total_amount'], 2); ?></td>
+                        <td class="amount-cell due-amount">₹<?php echo number_format($bill['amount_due'], 2); ?></td>
+                        <td class="bill-items">
+                            <?php 
+                            $items = explode("\n", $bill['items_list']);
+                            foreach ($items as $item) {
+                                echo htmlspecialchars($item) . "<br>";
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
+
+            <div class="section-title">Payment History</div>
+            <table class="table">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -222,15 +352,14 @@ $payments = $stmt->get_result();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($payment = $payments->fetch_assoc()): ?>
+                    <?php 
+                    $payments->data_seek(0);
+                    while ($payment = $payments->fetch_assoc()): 
+                    ?>
                     <tr>
                         <td><?php echo date('d M Y, h:i A', strtotime($payment['payment_date'])); ?></td>
-                        <td>
-                            <a href="view_bill.php?id=<?php echo $payment['bill_id']; ?>" class="text-primary">
-                                <?php echo $payment['bill_number']; ?>
-                            </a>
-                        </td>
-                        <td>₹<?php echo number_format($payment['amount'], 2); ?></td>
+                        <td><?php echo $payment['bill_number']; ?></td>
+                        <td class="amount-cell">₹<?php echo number_format($payment['amount'], 2); ?></td>
                         <td><?php echo ucfirst(str_replace('_', ' ', $payment['payment_method'])); ?></td>
                         <td><?php echo htmlspecialchars($payment['notes'] ?? ''); ?></td>
                         <td><?php echo htmlspecialchars($payment['created_by_name']); ?></td>
@@ -239,54 +368,135 @@ $payments = $stmt->get_result();
                 </tbody>
             </table>
         </div>
-        <?php else: ?>
-        <div class="alert alert-info">No payment history found.</div>
-        <?php endif; ?>
 
-        <!-- Bill History -->
-        <h3 class="mb-3 mt-4">Bill History</h3>
-        <?php while ($bill = $bills->fetch_assoc()): ?>
-        <div class="bill-card">
-            <div class="bill-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-0">Bill #<?php echo $bill['bill_number']; ?></h5>
-                        <small><?php echo date('d M Y, h:i A', strtotime($bill['created_at'])); ?></small>
+        <!-- Regular Display Section -->
+        <div class="no-print">
+            <div class="row mb-4">
+                <div class="col-md-2 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-value"><?php echo $stats['total_bills']; ?></div>
+                        <div class="stat-label">Total Bills</div>
                     </div>
-                    <div class="text-end">
-                        <div class="h5 mb-0">₹<?php echo number_format($bill['total_amount'], 0); ?></div>
-                        <small>
-                            <?php echo $bill['total_items']; ?> items
-                            <?php if ($bill['amount_due'] > 0): ?>
-                            <span class="text-danger">(Due: ₹<?php echo number_format($bill['amount_due'], 0); ?>)</span>
-                            <?php endif; ?>
-                        </small>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-value">₹<?php echo number_format($stats['total_spent'], 0); ?></div>
+                        <div class="stat-label">Total Spent</div>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-value">₹<?php echo number_format($stats['total_paid'], 0); ?></div>
+                        <div class="stat-label">Total Paid</div>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-value text-success">₹<?php echo number_format($stats['total_discounts'], 0); ?></div>
+                        <div class="stat-label">Total Discounts</div>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <div class="stat-card">
+                        <div class="stat-value <?php echo $stats['total_due'] > 0 ? 'text-danger' : 'text-success'; ?>">
+                            ₹<?php echo number_format($stats['total_due'], 0); ?>
+                        </div>
+                        <div class="stat-label">Amount Due</div>
                     </div>
                 </div>
             </div>
-            <div class="bill-body">
-                <div class="items-list">
-                    <?php 
-                    $items = explode("\n", $bill['items_list']);
-                    foreach ($items as $item) {
-                        echo htmlspecialchars($item) . "<br>";
-                    }
-                    ?>
+
+            <?php if ($stats['total_due'] > 0): ?>
+            <!-- Total Settlement Button -->
+            <div class="mb-4">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#totalSettlementModal">
+                    <i class="bi bi-cash-coin"></i> Total Settlement
+                </button>
+            </div>
+            <?php endif; ?>
+
+            <!-- Payment History -->
+            <h3 class="mb-3">Payment History</h3>
+            <?php if ($payments->num_rows > 0): ?>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Bill Number</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Notes</th>
+                            <th>Recorded By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while ($payment = $payments->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo date('d M Y, h:i A', strtotime($payment['payment_date'])); ?></td>
+                            <td>
+                                <a href="view_bill.php?id=<?php echo $payment['bill_id']; ?>" class="text-primary">
+                                    <?php echo $payment['bill_number']; ?>
+                                </a>
+                            </td>
+                            <td>₹<?php echo number_format($payment['amount'], 2); ?></td>
+                            <td><?php echo ucfirst(str_replace('_', ' ', $payment['payment_method'])); ?></td>
+                            <td><?php echo htmlspecialchars($payment['notes'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($payment['created_by_name']); ?></td>
+                        </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php else: ?>
+            <div class="alert alert-info">No payment history found.</div>
+            <?php endif; ?>
+
+            <!-- Bill History -->
+            <h3 class="mb-3 mt-4">Bill History</h3>
+            <?php while ($bill = $bills->fetch_assoc()): ?>
+            <div class="bill-card">
+                <div class="bill-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Bill #<?php echo $bill['bill_number']; ?></h5>
+                            <small><?php echo date('d M Y, h:i A', strtotime($bill['created_at'])); ?></small>
+                        </div>
+                        <div class="text-end">
+                            <div class="h5 mb-0">₹<?php echo number_format($bill['total_amount'], 0); ?></div>
+                            <small>
+                                <?php echo $bill['total_items']; ?> items
+                                <?php if ($bill['amount_due'] > 0): ?>
+                                <span class="text-danger">(Due: ₹<?php echo number_format($bill['amount_due'], 0); ?>)</span>
+                                <?php endif; ?>
+                            </small>
+                        </div>
+                    </div>
                 </div>
-                <div class="mt-3">
-                    <a href="view_bill.php?id=<?php echo $bill['id']; ?>" class="btn btn-primary btn-sm">
-                        View Bill
-                    </a>
-                    <?php if ($bill['amount_due'] > 0): ?>
-                    <button type="button" class="btn btn-success btn-sm" 
-                            onclick="showPaymentModal(<?php echo $bill['id']; ?>, <?php echo $bill['amount_due']; ?>)">
-                        Record Payment
-                    </button>
-                    <?php endif; ?>
+                <div class="bill-body">
+                    <div class="items-list">
+                        <?php 
+                        $items = explode("\n", $bill['items_list']);
+                        foreach ($items as $item) {
+                            echo htmlspecialchars($item) . "<br>";
+                        }
+                        ?>
+                    </div>
+                    <div class="mt-3">
+                        <a href="view_bill.php?id=<?php echo $bill['id']; ?>" class="btn btn-primary btn-sm">
+                            View Bill
+                        </a>
+                        <?php if ($bill['amount_due'] > 0): ?>
+                        <button type="button" class="btn btn-success btn-sm" 
+                                onclick="showPaymentModal(<?php echo $bill['id']; ?>, <?php echo $bill['amount_due']; ?>)">
+                            Record Payment
+                        </button>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
+            <?php endwhile; ?>
         </div>
-        <?php endwhile; ?>
     </div>
 
     <!-- Payment Modal -->
